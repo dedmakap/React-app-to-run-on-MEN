@@ -1,6 +1,6 @@
 import Col from 'react-bootstrap/lib/Col'
 import Row from 'react-bootstrap/lib/Row'
-import React, { Component } from 'react';
+import React from 'react';
 
 function Center(props)  {
     return (

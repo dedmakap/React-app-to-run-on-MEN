@@ -3,74 +3,48 @@ import './App.css';
 import {
   BrowserRouter as Router,
   Route,
+  Switch,
 } from 'react-router-dom';
 
 import SignIn from './containers/Signin'
 import Register from './containers/Register'
 import Navbar from './containers/Navbar'
 import Home from './containers/Home'
+import Notfound from './components/Notfound'
 
-// const Topics = ({match}) => (
-//   <div>
-//     <h2>Topics</h2>
-//     <ul>
-//       <li>
-//         <Link to={`${match.url}/rendering`}>
-//           Rendering with React
-//         </Link>
-//       </li>
-//       <li>
-//         <Link to={`${match.url}/components`}>
-//           Components
-//         </Link>
-//       </li>
-//       <li>
-//         <Link to={`${match.url}/props-v-state`}>
-//           Props v. State
-//         </Link>
-//       </li>
-//     </ul>
 
-//     <Route path={`${match.path}/:topicId`} component={Topic}/>
-//     <Route exact path={match.path} render={() => (
-//       <h3>Please select a topic.</h3>
-//     )}/>
-//   </div>
-// )
 
 class App extends Component {
   constructor(props) {
     super(props);
-    console.log('this is a constructor');
     this.state = {
-      flag: true,
+      user: undefined, //JSON.parse(localStorage.getItem('user')),
     }
   }
 
-  componentWillMount() {
-    console.log('willdsmounFDt');
+  setUser = (user) => {
+    console.log('set user wow', user);
+    this.setState({ user })
   }
-  clickHandler = () => {
-    console.log('clicked');
-    this.setState({
-      flag: false,
-    })
-  }
+  
   componentDidMount() {
-    console.log('didmounfdt');
+    this.setState({user:JSON.parse(localStorage.getItem('user'))})
   }
+
   render() {
     return (
       <div style={{width:'100%'}}>
       <Router>
           <div>
-          <Navbar /> 
+          <Navbar user={this.state.user} /> 
+          <Switch>
           <Route path='/signin' component={SignIn} />
-          <Route exact path='/' component={Home} />
-          <Route path='/register' component={Register} />
+          <Route exact path='/' component={() => <Home user={this.state.user} />} />
+          <Route path='/register' component={() => <Register user={this.state.user} setUser={this.setUser} />} />
+          <Route component={Notfound}/>
+          </Switch>
         </div>
       </Router>
-
       </div>
     )
   }

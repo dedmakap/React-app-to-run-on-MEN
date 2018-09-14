@@ -18,12 +18,16 @@ class Navbar extends Component {
           </NavbarBoot.Brand>
         </NavbarBoot.Header>
         <Nav>
+          {this.props.user && 
+          <React.Fragment>
           <NavItem eventKey={1} href='/users'>
             Users
-    </NavItem>
+          </NavItem>
           <NavItem eventKey={2} href='/users/userpage'>
             My profile
-    </NavItem>
+          </NavItem>
+          </React.Fragment>
+          }
           <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
             <MenuItem eventKey={3.1}>Action</MenuItem>
             <MenuItem eventKey={3.2}>Another action</MenuItem>
@@ -32,9 +36,15 @@ class Navbar extends Component {
             <MenuItem eventKey={3.4}>Separated link</MenuItem>
           </NavDropdown>
         </Nav>
+        {this.props.user ?
+        <div className='login-block'>
+          <Link to='/signout'>Log out</Link>
+        </div>
+        :
         <div className='login-block'>
           <Link to='/signin'>Log in</Link>
         </div>
+        }
       </NavbarBoot>
     )
   }

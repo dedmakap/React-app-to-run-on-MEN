@@ -23,7 +23,7 @@ class SignIn extends Component {
   renderEmailErr = () => {
     if (this.state.emailWrong) {
       return (
-        <p>That email is not registered!</p>
+        <p style={{color:'red'}}>That email is not registered!</p>
       )
     }
   }
@@ -31,7 +31,7 @@ class SignIn extends Component {
   renderPassErr = () => {
     if (this.state.passWrong) {
     return (
-      <p>That password is incorrect!</p>
+      <p style={{color:'red'}}>That password is incorrect!</p>
     )
     }
   }
