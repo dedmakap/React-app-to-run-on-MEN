@@ -46,7 +46,7 @@ class Navbar extends Component {
             <MenuItem eventKey={3.4}>Separated link</MenuItem>
           </NavDropdown>
         </Nav>
-        {this.props.user ?
+        {this.props.user && this.props.user.role === 'admin' ?
         <div className='login-block'>
           <Button bsStyle='link' onClick={this.signout}>Log out</Button>
         </div>

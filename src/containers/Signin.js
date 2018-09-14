@@ -48,6 +48,11 @@ class SignIn extends Component {
     }
     userApi.signIn(guest)
     .then((data) => {
+      if (data.emailWrong) {
+        return this.setState({
+          emailWrong: true,
+        })
+      }
       if (data.passWrong) {
         return this.setState({
           passWrong: true,
