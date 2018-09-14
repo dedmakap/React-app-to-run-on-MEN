@@ -6,6 +6,9 @@ import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import Col from 'react-bootstrap/lib/Col'
 import Center from '../components/Centralizer';
+import {withRouter} from 'react-router-dom';
+import HelpBlock from 'react-bootstrap/lib/HelpBlock'
+import * as userApi from '../api/user';
 
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Checkbox from 'react-bootstrap/lib/Checkbox'
@@ -15,10 +18,60 @@ class SignIn extends Component {
     this.state = {
       emailWrong: false,
       passWrong: false,
+      passInputError: null,
       email: '',
       password:'',
     }
   }
+  
+  componentDidMount() {
+    if (this.props.user) {
+      this.props.history.push('/')
+    }
+  }
+
+  onInputChange = (e) => {
+    e.preventDefault();    
+    const { id } = e.target;    
+    this.setState({
+      [id]: e.target.value,
+    })
+  }
+
+  onSubmit = (e) => {
+    e.preventDefault();
+    const validForm = this.validateForm()
+    if (!validForm) return;
+    const guest = {
+      email: this.state.email,
+      password: this.state.password,
+    }
+    userApi.signIn(guest)
+    .then((data) => {
+      if (data.passWrong) {
+        return this.setState({
+          passWrong: true,
+        })
+      }
+      this.props.setUser(data)
+      localStorage.setItem('user',JSON.stringify(data))
+      this.props.history.push('/')
+    })
+  }
+
+  validateForm = () => {
+    const err = {}
+
+    if (this.state.password.length < 3) {
+      err.passInputError = 'error'
+    }
+
+    this.setState(err)
+    if (Object.keys(err).length) return false;  
+    return true;
+  }
+
+
 
   renderEmailErr = () => {
     if (this.state.emailWrong) {
@@ -36,18 +89,6 @@ class SignIn extends Component {
     }
   }
 
-  onSubmit = (e) => {
-    e.preventDefault();
-    console.log(this.state);
-  }
-
-  onInputChange = (e) => {
-    e.preventDefault();    
-    const { id } = e.target;    
-    this.setState({
-      [id]: e.target.value,
-    })
-  }
 
   render() {
     
@@ -74,7 +115,7 @@ class SignIn extends Component {
               </Col>
             </FormGroup>
 
-            <FormGroup controlId="password">
+            <FormGroup controlId="password" validationState={this.state.passInputError}>
               <Col componentClass={ControlLabel} sm={2}>
                 Password
               </Col>
@@ -85,6 +126,9 @@ class SignIn extends Component {
                   onChange={this.onInputChange}
                   value={this.state.password}
                   />
+                  {this.state.passInputError && 
+                  <HelpBlock>Password is too short!</HelpBlock>
+                  }
               </Col>
             </FormGroup>
 
@@ -113,4 +157,4 @@ class SignIn extends Component {
   }
 }
 
-export default SignIn;
+export default withRouter(SignIn);

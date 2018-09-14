@@ -57,7 +57,7 @@ class Register extends Component {
     .then(data => {
       console.log(data);
       if (data.emailWrong) {
-        this.setState({
+        return this.setState({
           emailError: true,
         })
       }
@@ -89,9 +89,7 @@ class Register extends Component {
 
   validateForm = () => {
     const err = {}
-    console.log(this.state.age);
     if (Number(this.state.age) <= 0 || typeof Number(this.state.age) !== 'number' )  {
-      
       err.ageError = 'error'
     }
     if (this.state.fullname.length < 3) {
@@ -104,7 +102,7 @@ class Register extends Component {
       err.passError = 'error'
     }
 
-    this.setState(err, ()=> {console.log('clb', this.state);} )
+    this.setState(err)
     if (Object.keys(err).length) return false;  
     return true;
   }

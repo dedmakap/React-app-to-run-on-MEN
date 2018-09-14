@@ -3,9 +3,9 @@ import Row from 'react-bootstrap/lib/Row'
 import React, { Component } from 'react';
 
 class Home extends Component {
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
   render() {
     return (
       <Row>

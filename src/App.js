@@ -6,6 +6,7 @@ import {
   Switch,
 } from 'react-router-dom';
 
+
 import SignIn from './containers/Signin'
 import Register from './containers/Register'
 import Navbar from './containers/Navbar'
@@ -18,7 +19,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: undefined, //JSON.parse(localStorage.getItem('user')),
+      user: undefined,
+      loading: true,
     }
   }
 
@@ -28,17 +30,33 @@ class App extends Component {
   }
   
   componentDidMount() {
-    this.setState({user:JSON.parse(localStorage.getItem('user'))})
+    const user = JSON.parse(localStorage.getItem('user')) || undefined ;
+    const loading = false;
+    this.setState({user, loading})
+  }
+
+  logout = () => {
+    return new Promise((resolve,reject) => {
+      this.setState({user: undefined}, (err)=>{
+        if (err) return reject(err);
+        localStorage.removeItem('user')
+        return resolve()
+      });
+    })
   }
 
   render() {
+    if (this.state.loading) {
+      return <div>Loading...</div>
+    }
+
     return (
       <div style={{width:'100%'}}>
       <Router>
           <div>
-          <Navbar user={this.state.user} /> 
+          <Navbar user={this.state.user} logout={this.logout}/> 
           <Switch>
-          <Route path='/signin' component={SignIn} />
+          <Route path='/signin' component={() => <SignIn user={this.state.user} setUser={this.setUser} />} />
           <Route exact path='/' component={() => <Home user={this.state.user} />} />
           <Route path='/register' component={() => <Register user={this.state.user} setUser={this.setUser} />} />
           <Route component={Notfound}/>

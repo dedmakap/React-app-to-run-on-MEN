@@ -1,7 +1,8 @@
 import axios from './agent';
 
-export const signIn = (data) => {
-  return axios.post('/user/signin', {data})
+export const signIn = (guest) => {
+  return axios.post('/signin/api', {guest})
+    .then((response) => response.data)
 }
 
 export const register = (user) => {

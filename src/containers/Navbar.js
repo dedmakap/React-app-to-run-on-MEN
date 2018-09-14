@@ -1,20 +1,30 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/lib/Button';
-import Form from 'react-bootstrap/lib/Form'
-import NavbarBoot from 'react-bootstrap/lib/Navbar'
-import Nav from 'react-bootstrap/lib/Nav'
-import MenuItem from 'react-bootstrap/lib/MenuItem'
-import NavItem from 'react-bootstrap/lib/NavItem'
-import NavDropdown from 'react-bootstrap/lib/NavDropdown'
+import NavbarBoot from 'react-bootstrap/lib/Navbar';
+import Nav from 'react-bootstrap/lib/Nav';
+import MenuItem from 'react-bootstrap/lib/MenuItem';
+import NavItem from 'react-bootstrap/lib/NavItem';
+import NavDropdown from 'react-bootstrap/lib/NavDropdown';
+import {withRouter} from 'react-router-dom';
 
 class Navbar extends Component {
+
+  signout = () => {
+    this.props.logout()
+    .then(() => {
+      return this.props.history.push('/');
+    })
+    
+  }
+
+
   render() {
     return (
       <NavbarBoot className='main-navbar'>
         <NavbarBoot.Header>
           <NavbarBoot.Brand>
-            <p>React-Bootstrap</p>
+            <Link to='/'>React-Bootstrap</Link>
           </NavbarBoot.Brand>
         </NavbarBoot.Header>
         <Nav>
@@ -38,7 +48,7 @@ class Navbar extends Component {
         </Nav>
         {this.props.user ?
         <div className='login-block'>
-          <Link to='/signout'>Log out</Link>
+          <Button bsStyle='link' onClick={this.signout}>Log out</Button>
         </div>
         :
         <div className='login-block'>
@@ -50,4 +60,4 @@ class Navbar extends Component {
   }
 }
 
-export default Navbar;
+export default withRouter(Navbar);
