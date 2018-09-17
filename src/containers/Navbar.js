@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import Button from 'react-bootstrap/lib/Button';
 import NavbarBoot from 'react-bootstrap/lib/Navbar';
 import Nav from 'react-bootstrap/lib/Nav';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
 import NavItem from 'react-bootstrap/lib/NavItem';
 import NavDropdown from 'react-bootstrap/lib/NavDropdown';
-import {withRouter} from 'react-router-dom';
+import { LinkContainer } from 'react-router-bootstrap';
+import PropTypes from 'prop-types';
 
 class Navbar extends Component {
 
   signout = () => {
     this.props.logout()
-    .then(() => {
-      return this.props.history.push('/');
-    })
-    
+      .then(() => {
+        return this.props.history.push('/');
+      });
+
   }
 
 
@@ -28,16 +29,20 @@ class Navbar extends Component {
           </NavbarBoot.Brand>
         </NavbarBoot.Header>
         <Nav>
-          {this.props.user && 
-          <React.Fragment>
-          <NavItem eventKey={1} href='/users'>
-            Users
-          </NavItem>
-          <NavItem eventKey={2} href='/users/userpage'>
-            My profile
-          </NavItem>
-          </React.Fragment>
-          }
+          {this.props.user && (this.props.user.role === 'admin') && (
+            <React.Fragment>
+              <LinkContainer to='/users'>
+                <NavItem>
+                  Users
+                </NavItem>
+              </LinkContainer>
+              <LinkContainer to='/users/userpage'>
+                <NavItem>
+                  My profile
+                </NavItem>
+              </LinkContainer>
+            </React.Fragment>
+          )}
           <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
             <MenuItem eventKey={3.1}>Action</MenuItem>
             <MenuItem eventKey={3.2}>Another action</MenuItem>
@@ -46,18 +51,30 @@ class Navbar extends Component {
             <MenuItem eventKey={3.4}>Separated link</MenuItem>
           </NavDropdown>
         </Nav>
-        {this.props.user && this.props.user.role === 'admin' ?
-        <div className='login-block'>
-          <Button bsStyle='link' onClick={this.signout}>Log out</Button>
-        </div>
-        :
-        <div className='login-block'>
-          <Link to='/signin'>Log in</Link>
-        </div>
-        }
+        {this.props.user ? (
+          <div className='login-block'>
+            <Button bsStyle='link' onClick={this.signout}>Log out</Button>
+          </div>
+        ) : (
+          <div className='login-block'>
+            <Link to='/signin'>Log in</Link>
+          </div>
+          )}
       </NavbarBoot>
-    )
+    );
   }
 }
+
+Navbar.propTypes = {
+  user: PropTypes.shape({
+    fullname: PropTypes.string,
+    role: PropTypes.string,
+    token: PropTypes.string,
+  }).isRequired,
+  logout: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default withRouter(Navbar);

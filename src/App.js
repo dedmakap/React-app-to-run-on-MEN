@@ -7,11 +7,14 @@ import {
 } from 'react-router-dom';
 
 
-import SignIn from './containers/Signin'
-import Register from './containers/Register'
-import Navbar from './containers/Navbar'
-import Home from './containers/Home'
-import Notfound from './components/Notfound'
+import SignIn from './containers/Signin';
+import Register from './containers/Register';
+import Navbar from './containers/Navbar';
+import Home from './containers/Home';
+import Users from './containers/Userslist';
+import Userpage from './containers/Userpage';
+import Notfound from './components/Notfound';
+
 
 
 
@@ -21,50 +24,52 @@ class App extends Component {
     this.state = {
       user: undefined,
       loading: true,
-    }
+    };
+  }
+
+  componentDidMount() {
+    const user = JSON.parse(localStorage.getItem('user')) || undefined;
+    const loading = false;
+    this.setState({ user, loading });
   }
 
   setUser = (user) => {
     console.log('set user wow', user);
-    this.setState({ user })
-  }
-  
-  componentDidMount() {
-    const user = JSON.parse(localStorage.getItem('user')) || undefined ;
-    const loading = false;
-    this.setState({user, loading})
+    this.setState({ user });
   }
 
   logout = () => {
-    return new Promise((resolve,reject) => {
-      this.setState({user: undefined}, (err)=>{
+    return new Promise((resolve, reject) => {
+      this.setState({ user: undefined }, (err) => {
         if (err) return reject(err);
-        localStorage.removeItem('user')
-        return resolve()
+        localStorage.removeItem('user');
+        return resolve();
       });
-    })
+    });
   }
 
   render() {
     if (this.state.loading) {
-      return <div>Loading...</div>
+      return <div>Loading...</div>;
     }
 
     return (
-      <div style={{width:'100%'}}>
-      <Router>
+      <div style={{ width: '100%' }}>
+        <Router>
           <div>
-          <Navbar user={this.state.user} logout={this.logout}/> 
-          <Switch>
-          <Route path='/signin' component={() => <SignIn user={this.state.user} setUser={this.setUser} />} />
-          <Route exact path='/' component={() => <Home user={this.state.user} />} />
-          <Route path='/register' component={() => <Register user={this.state.user} setUser={this.setUser} />} />
-          <Route component={Notfound}/>
-          </Switch>
-        </div>
-      </Router>
+            <Navbar user={this.state.user} logout={this.logout} />
+            <Switch>
+              <Route path='/signin' component={() => <SignIn user={this.state.user} setUser={this.setUser} />} />
+              <Route exact path='/' component={() => <Home user={this.state.user} />} />
+              <Route path='/register' component={() => <Register user={this.state.user} setUser={this.setUser} />} />
+              <Route exact path='/users' component={() => <Users user={this.state.user} />} />
+              <Route path='/users/userpage' component={() => <Userpage user={this.state.user} />} />
+              <Route component={Notfound} />
+            </Switch>
+          </div>
+        </Router>
       </div>
-    )
+    );
   }
 }
 

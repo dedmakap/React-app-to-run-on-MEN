@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import Button from 'react-bootstrap/lib/Button';
-import Form from 'react-bootstrap/lib/Form'
-import FormGroup from 'react-bootstrap/lib/FormGroup'
-import FormControl from 'react-bootstrap/lib/FormControl'
-import Col from 'react-bootstrap/lib/Col'
-import Center from '../components/Centralizer';
-import {withRouter} from 'react-router-dom';
-import HelpBlock from 'react-bootstrap/lib/HelpBlock'
+import Form from 'react-bootstrap/lib/Form';
+import FormGroup from 'react-bootstrap/lib/FormGroup';
+import FormControl from 'react-bootstrap/lib/FormControl';
+import Col from 'react-bootstrap/lib/Col';
+import HelpBlock from 'react-bootstrap/lib/HelpBlock';
+import ControlLabel from 'react-bootstrap/lib/ControlLabel';
+import PropTypes from 'prop-types';
+import Checkbox from 'react-bootstrap/lib/Checkbox';
 import * as userApi from '../api/user';
+import Center from '../components/Centralizer';
 
-import ControlLabel from 'react-bootstrap/lib/ControlLabel'
-import Checkbox from 'react-bootstrap/lib/Checkbox'
 class SignIn extends Component {
   constructor(props) {
     super(props);
@@ -21,12 +21,12 @@ class SignIn extends Component {
       passInputError: null,
       email: '',
       password:'',
-    }
+    };
   }
   
   componentDidMount() {
     if (this.props.user) {
-      this.props.history.push('/')
+      this.props.history.push('/');
     }
   }
 
@@ -35,43 +35,43 @@ class SignIn extends Component {
     const { id } = e.target;    
     this.setState({
       [id]: e.target.value,
-    })
+    });
   }
 
   onSubmit = (e) => {
     e.preventDefault();
-    const validForm = this.validateForm()
+    const validForm = this.validateForm();
     if (!validForm) return;
     const guest = {
       email: this.state.email,
       password: this.state.password,
-    }
+    };
     userApi.signIn(guest)
     .then((data) => {
       if (data.emailWrong) {
         return this.setState({
           emailWrong: true,
-        })
+        });
       }
       if (data.passWrong) {
         return this.setState({
           passWrong: true,
-        })
+        });
       }
-      this.props.setUser(data)
-      localStorage.setItem('user',JSON.stringify(data))
-      this.props.history.push('/')
-    })
+      this.props.setUser(data);
+      localStorage.setItem('user',JSON.stringify(data));
+      this.props.history.push('/');
+    });
   }
 
   validateForm = () => {
-    const err = {}
+    const err = {};
 
     if (this.state.password.length < 3) {
-      err.passInputError = 'error'
+      err.passInputError = 'error';
     }
 
-    this.setState(err)
+    this.setState(err);
     if (Object.keys(err).length) return false;  
     return true;
   }
@@ -82,7 +82,7 @@ class SignIn extends Component {
     if (this.state.emailWrong) {
       return (
         <p style={{color:'red'}}>That email is not registered!</p>
-      )
+      );
     }
   }
 
@@ -90,7 +90,7 @@ class SignIn extends Component {
     if (this.state.passWrong) {
     return (
       <p style={{color:'red'}}>That password is incorrect!</p>
-    )
+    );
     }
   }
 
@@ -103,8 +103,9 @@ class SignIn extends Component {
           style={
             { width: '500px',
           }
-          }>
-        <h1>Please Sign in</h1>
+          }
+        >
+          <h1>Please Sign in</h1>
           <Form horizontal onSubmit={this.onSubmit}>
             <FormGroup controlId="email">
               <Col componentClass={ControlLabel} sm={2}>
@@ -130,8 +131,8 @@ class SignIn extends Component {
                   placeholder="Password"
                   onChange={this.onInputChange}
                   value={this.state.password}
-                  />
-                  {this.state.passInputError && 
+                />
+                {this.state.passInputError && 
                   <HelpBlock>Password is too short!</HelpBlock>
                   }
               </Col>
@@ -152,14 +153,27 @@ class SignIn extends Component {
             </FormGroup>
             <FormGroup>
               <Col smOffset={2} sm={10}>
-              <Link to='/register' >Don't have an account? Create one</Link>
+                <Link to='/register'>Don't have an account? Create one</Link>
               </Col>
             </FormGroup>
           </Form>
         </div>
-       </Center>
+      </Center>
     );
   }
 }
+
+SignIn.propTypes = {
+  user: PropTypes.shape({
+    fullname: PropTypes.string,
+    role: PropTypes.string,
+    token: PropTypes.string,
+  }).isRequired,
+  setUser: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
 
 export default withRouter(SignIn);

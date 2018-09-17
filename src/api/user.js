@@ -10,3 +10,8 @@ export const register = (user) => {
     .then((response) => response.data)
 }
 
+export const search = (query) => {
+  return axios.post('/users/search/api', {query})
+    .then((response) => response.data)
+}
+
