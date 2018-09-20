@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, Redirect } from 'react-router-dom';
 import Button from 'react-bootstrap/lib/Button';
 import Form from 'react-bootstrap/lib/Form';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
@@ -24,11 +24,6 @@ class SignIn extends Component {
     };
   }
   
-  componentDidMount() {
-    if (this.props.user) {
-      this.props.history.push('/');
-    }
-  }
 
   onInputChange = (e) => {
     e.preventDefault();    
@@ -96,6 +91,10 @@ class SignIn extends Component {
 
 
   render() {
+    if (!this.props.user || this.props.user === undefined) {
+      return <Redirect to="/" />;
+    }
+
     
     return (
       <Center> 

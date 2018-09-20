@@ -63,7 +63,7 @@ class App extends Component {
               <Route exact path='/' component={() => <Home user={this.state.user} />} />
               <Route path='/register' component={() => <Register user={this.state.user} setUser={this.setUser} />} />
               <Route exact path='/users' component={() => <Users user={this.state.user} />} />
-              <Route path='/users/userpage' component={() => <Userpage user={this.state.user} />} />
+              <Route exact path='/users/userpage/:id' component={() => <Userpage guest={this.state.user} />} />
               <Route component={Notfound} />
             </Switch>
           </div>
