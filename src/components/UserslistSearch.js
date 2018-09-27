@@ -14,9 +14,6 @@ const StyledInputRange = styled.div`
 `;
 
 class SearchPanel extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   onInputChange = (e) => {
     console.log();

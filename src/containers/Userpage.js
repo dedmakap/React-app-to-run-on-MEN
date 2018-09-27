@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
-// import styled from 'styled-components';
-import { withRouter, Redirect } from 'react-router-dom';
-// import Button from 'react-bootstrap/lib/Button';
-// import Form from 'react-bootstrap/lib/Form';
+import { withRouter } from 'react-router-dom';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
 import FormControl from 'react-bootstrap/lib/FormControl';
+import DropdownButton from 'react-bootstrap/lib/DropdownButton';
+import MenuItem from 'react-bootstrap/lib/MenuItem';
 import Grid from 'react-bootstrap/lib/Grid';
 import Col from 'react-bootstrap/lib/Col';
 import Row from 'react-bootstrap/lib/Row';
 import Thumbnail from 'react-bootstrap/lib/Thumbnail';
-// import ControlLabel from 'react-bootstrap/lib/ControlLabel';
 import HelpBlock from 'react-bootstrap/lib/HelpBlock';
 import Table from 'react-bootstrap/lib/Table';
 import PropTypes from 'prop-types';
-import { getUserById } from '../api/user';
-// import * as userApi from '../api/user';
+import { getUserById, putUserField, postUserAvatar } from '../api/user';
+import EditableCell from '../components/ProfileEditableCell';
+
+
 // import Center from '../components/Centralizer';
 
 
@@ -31,40 +31,104 @@ class Userpage extends Component {
         role: {
           name: '',
         },
+        avatar: '',
       },
+      updatedField: '',
     };
   }
 
   componentDidMount() {
     const id = this.props.match.params.id;
+    if (!this.props.guest || this.props.guest === undefined) {
+        return this.props.history.push('/');
+      }
+    if (this.props.guest.id !== id && this.props.guest.role !== 'admin') {
+      return this.props.history.push('/');
+    }
     return getUserById(id)
       .then((data) => {
-        console.log(data);
-        this.setState({loading: false});
+        this.setState({ loading: false, user: data });
       });
   }
 
+  onFileSelect = (e) => {
+    e.preventDefault();
+    const file = e.target.files[0];
+    this.fileUpload(file)
+      .then((data) => {
+        console.log(data);
+        this.setState({user: data});
+      });
+    
+  }
+
+  
+
+  onMenuItemSelect = (key, e) => {
+    const roleId = e.target.id;
+    const id = this.props.match.params.id;
+    let colId = 'role';
+    if (e.target.text.toLowerCase() !== this.state.user.role.name) {
+      return putUserField(id, colId, roleId)
+        .then((data) => {
+          this.setState({ user: data });
+        });
+    }
+  }
+
+  onInputClick = (colId) => {
+    this.setState((prevState) => ({
+      updatedField: prevState.user[colId]
+    }));
+  }
+
+  onInputChange = (update) => {
+    this.setState({ updatedField: update });
+  }
+
+  onInputBlur = (colId) => {
+    const id = this.props.match.params.id;
+    if (this.state.user[colId] !== this.state.updatedField.trim()) {
+      return putUserField(id, colId, this.state.updatedField)
+        .then((data) => {
+          this.setState({ user: data });
+        });
+    }
+  }
+  
+  fileUpload(file) {
+    const formData = new FormData();
+    const id = this.props.match.params.id;
+    formData.append('file',file);
+    return postUserAvatar(id, formData);
+    
+  }
 
   render() {
-
-    if (!this.props.guest || this.props.guest === undefined) {
-      return <Redirect to="/" />;
-    }
+    const avaPath = this.state.user.avatar ? `http://localhost:3500/images/${this.state.user.avatar}` : "/avatarPlaceholder.png";
 
     if (this.state.loading) {
       return <div>Loading...</div>;
     }
-    
+
     return (
       <React.Fragment>
         <Grid>
           <Row>
             <h1>Your profile page</h1>
+            <h2>
+              Hello, 
+              {' '}
+              {this.state.user.firstName}
+              {'!'}
+            </h2>
           </Row>
           <Row>
             <Col xs={4} md={4}>
-
-              <Thumbnail src="/avatarPlaceholder.png" alt='Your avatar'>
+              <Thumbnail
+                src={avaPath}
+                alt='Your avatar'
+              >
                 <h3>Your avatar</h3>
                 <form>
                   <FormGroup>
@@ -72,6 +136,7 @@ class Userpage extends Component {
                     <FormControl
                       id="formControlsFile"
                       type="file"
+                      onChange={this.onFileSelect}
                     />
                   </FormGroup>
                 </form>
@@ -90,14 +155,74 @@ class Userpage extends Component {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>{this.state.user.firstName}</td>
-                    <td>{this.state.user.email}</td>
-                    <td>{this.state.user.age}</td>
-                    <td>{this.state.user.userName}</td>
+                    <td>
+                      <EditableCell
+                        divValue={this.state.user.firstName}
+                        colId="firstName"
+                        onInputClick={this.onInputClick}
+                        onInputChange={this.onInputChange}
+                        onInputBlur={this.onInputBlur}
+                        inputValue={this.state.updatedField}
+                      />
+                    </td>
+                    <td>
+                      <EditableCell
+                        divValue={this.state.user.email}
+                        colId="email"
+                        onInputClick={this.onInputClick}
+                        onInputChange={this.onInputChange}
+                        onInputBlur={this.onInputBlur}
+                        inputValue={this.state.updatedField}
+                      />
+                    </td>
+                    <td>
+                      <EditableCell
+                        divValue={String(this.state.user.age)}
+                        colId="age"
+                        onInputClick={this.onInputClick}
+                        onInputChange={this.onInputChange}
+                        onInputBlur={this.onInputBlur}
+                        inputValue={this.state.updatedField}
+                      />
+                    </td>
+                    <td>
+                      <EditableCell
+                        divValue={this.state.user.userName}
+                        colId="userName"
+                        onInputClick={this.onInputClick}
+                        onInputChange={this.onInputChange}
+                        onInputBlur={this.onInputBlur}
+                        inputValue={this.state.updatedField}
+                      />
+                    </td>
                     <td>{this.state.user.role.name}</td>
                   </tr>
                 </tbody>
               </Table>
+            </Col>
+            <Col mdOffset={11}>
+              {this.props.guest.role === 'admin' &&
+                (
+                  <DropdownButton
+                    bsStyle='default'
+                    title='Change role'
+                    id='change-role-dropdown'
+                  >
+                    <MenuItem
+                      id="5b8cec15dbf500a68decf847"
+                      onSelect={this.onMenuItemSelect}
+                    >
+                      Admin
+                    </MenuItem>
+                    <MenuItem 
+                      id="5b8ce284945dc819893a55d1"
+                      onSelect={this.onMenuItemSelect}
+                    >
+                      User
+                    </MenuItem>
+                  </DropdownButton>
+                )
+              }
             </Col>
           </Row>
         </Grid>
@@ -111,8 +236,12 @@ Userpage.propTypes = {
     fullname: PropTypes.string,
     role: PropTypes.string,
     token: PropTypes.string,
+    id: PropTypes.string,
   }).isRequired,
   match: PropTypes.shape().isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default withRouter(Userpage);

@@ -15,13 +15,6 @@ const StyledTableHead = styled.div`
 `;
 
 class UsersTable extends Component {
-  constructor(props) {
-    super(props);
-
-  }
-  
-  
-
   createTable = () => {
     const { users } = this.props;
     if (!users) return null;

@@ -49,7 +49,6 @@ class Register extends Component {
     };
     userApi.register(user)
       .then(data => {
-        console.log(data);
         if (data.emailWrong) {
           return this.setState({
             emailError: true,
@@ -219,11 +218,15 @@ Register.propTypes = {
     fullname: PropTypes.string,
     role: PropTypes.string,
     token: PropTypes.string,
-  }).isRequired,
+  }),
   setUser: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+};
+
+Register.defaultProps = {
+  user: undefined,
 };
 
 

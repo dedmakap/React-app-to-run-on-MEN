@@ -34,7 +34,6 @@ class App extends Component {
   }
 
   setUser = (user) => {
-    console.log('set user wow', user);
     this.setState({ user });
   }
 

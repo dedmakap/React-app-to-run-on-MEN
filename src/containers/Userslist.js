@@ -40,6 +40,9 @@ class Userslist extends Component {
   }
 
   componentDidMount() {
+    if (!this.props.user || this.props.user.role !== 'admin') {
+      return this.props.history.push('/');
+    }
     this.requestToServer();
   }
 
@@ -88,7 +91,7 @@ class Userslist extends Component {
   }
 
   render() {
-    if (!this.props.user || this.props.user === undefined) {
+    if (!this.props.user) {
       return <Redirect to="/" />;
     }
 
@@ -125,7 +128,14 @@ Userslist.propTypes = {
     fullname: PropTypes.string,
     role: PropTypes.string,
     token: PropTypes.string,
+  }),
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
   }).isRequired,
+};
+
+Userslist.defaultProps = {
+  user: undefined,
 };
 
 

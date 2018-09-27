@@ -21,6 +21,14 @@ class Navbar extends Component {
 
 
   render() {
+    
+    let profileLink = '/';
+    
+    if (this.props.user) {
+      profileLink = `/users/userpage/${this.props.user.id}`;
+    }
+    
+    
     return (
       <NavbarBoot className='main-navbar'>
         <NavbarBoot.Header>
@@ -31,12 +39,16 @@ class Navbar extends Component {
         <Nav>
           {this.props.user && (this.props.user.role === 'admin') && (
             <React.Fragment>
-              <LinkContainer to='/users'>
+              <LinkContainer to="/users">
                 <NavItem>
                   Users
                 </NavItem>
               </LinkContainer>
-              <LinkContainer to='/users/userpage'>
+            </React.Fragment>
+          )}
+          {this.props.user && (
+            <React.Fragment>
+              <LinkContainer to={profileLink}>
                 <NavItem>
                   My profile
                 </NavItem>
@@ -70,11 +82,16 @@ Navbar.propTypes = {
     fullname: PropTypes.string,
     role: PropTypes.string,
     token: PropTypes.string,
-  }).isRequired,
+    id: PropTypes.string,
+  }),
   logout: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+};
+
+Navbar.defaultProps = {
+  user: undefined
 };
 
 export default withRouter(Navbar);

@@ -91,7 +91,7 @@ class SignIn extends Component {
 
 
   render() {
-    if (!this.props.user || this.props.user === undefined) {
+    if (this.props.user || this.props.user !== undefined) {
       return <Redirect to="/" />;
     }
 
@@ -167,12 +167,15 @@ SignIn.propTypes = {
     fullname: PropTypes.string,
     role: PropTypes.string,
     token: PropTypes.string,
-  }).isRequired,
+  }),
   setUser: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
 };
 
+SignIn.defaultProps = {
+  user: undefined,
+};
 
 export default withRouter(SignIn);
