@@ -34,9 +34,11 @@ class Userslist extends Component {
       users: [],
       sortDirection: 'desc',
       sortTarget: 'role',
+      perPage: 9,
     };
 
-    this.requestToServer = _.debounce(this.requestToServer, 500);
+    this.debouncedRequestToServer = _.debounce(this.requestToServer, 500);
+    this.requestToServer = _.debounce(this.requestToServer, 100);
   }
 
   componentDidMount() {
@@ -47,16 +49,17 @@ class Userslist extends Component {
   }
 
   onSearchAgeChange = (keys) => {
-    console.log(keys);
-
     this.setState({ ageValue: keys });
-    this.requestToServer();
+    this.debouncedRequestToServer();
   }
 
   onSearchNameChange = (keys) => {
-    console.log(keys);
-
     this.setState({ nameQuery: keys });
+    this.debouncedRequestToServer();
+  }
+
+  onPerPageChange = (limit) => {
+    this.setState({perPage: limit});
     this.requestToServer();
   }
 
@@ -80,6 +83,7 @@ class Userslist extends Component {
       page: newPage,
       sortDirection: this.state.sortDirection,
       sortTarget: this.state.sortTarget,
+      perPage: this.state.perPage,
     };
     return getUsersList(query)
       .then((data) => {
@@ -105,6 +109,8 @@ class Userslist extends Component {
               onSearchAgeChange={this.onSearchAgeChange}
               onSearchNameChange={this.onSearchNameChange}
               ageValue={this.state.ageValue}
+              perPage={Number(this.state.perPage)}
+              onPerPageChange={this.onPerPageChange}
             />
           </SearchContainer>
           <UsersTable

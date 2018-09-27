@@ -16,10 +16,15 @@ const StyledInputRange = styled.div`
 class SearchPanel extends Component {
 
   onInputChange = (e) => {
-    console.log();
     e.preventDefault();
     let value = e.target.value;
     this.props.onSearchNameChange(value);
+  }
+
+  onPerPageChange = (e) => {
+    e.preventDefault();
+    let value = e.target.value;
+    this.props.onPerPageChange(value);
   }
 
   onAgeRangeChange = (value) => {
@@ -37,6 +42,17 @@ class SearchPanel extends Component {
             placeholder="Enter text"
             value={this.props.nameQuery}
             onChange={this.onInputChange}
+          />
+        </form>
+        <form>
+          <FormControl
+            id="pageSize"
+            type="number"
+            placeholder="Items per page"
+            min={5}
+            max={30}
+            value={this.props.perPage}
+            onChange={this.onPerPageChange}
           />
         </form>
         <StyledInputRange>
@@ -57,10 +73,16 @@ SearchPanel.propTypes = {
   nameQuery: PropTypes.string.isRequired,
   onSearchNameChange: PropTypes.func.isRequired,
   onSearchAgeChange: PropTypes.func.isRequired,
+  onPerPageChange: PropTypes.func.isRequired,
   ageValue: PropTypes.shape({
     min: PropTypes.number,
     max: PropTypes.number
   }).isRequired,
+  perPage: PropTypes.number,
+};
+
+SearchPanel.defaultProps = {
+  perPage: 9,
 };
 
 export default SearchPanel;

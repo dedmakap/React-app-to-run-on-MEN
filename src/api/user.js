@@ -3,7 +3,6 @@ import axios from './agent';
 const getHeaders = (contentType) => {
   const {token} = JSON.parse(localStorage.user);
   if (token && contentType) {
-    console.log('both tokens', token);
     return {
       Authorization: `Bearer ${token}`, // "Bearer " + token
       'content-type': 'multipart/form-data',
@@ -49,7 +48,6 @@ export const putUserField = (id, colId, updateValue) => {
 
 export const postUserAvatar = (id, formData) => {
   const headers = getHeaders(true);
-  console.log('wow',headers, id);
   return axios.post(`/users/userpage/api/${id}`, formData, {headers})
     .then((response) => response.data);
 };
