@@ -52,3 +52,10 @@ export const postUserAvatar = (id, formData) => {
     .then((response) => response.data);
 };
 
+export const signInFB = (token) => {
+  return axios.get(
+    'https://graph.facebook.com/me?fields=name,email',
+    {access_token: token},
+    )
+    .then((response) => response.data);
+};

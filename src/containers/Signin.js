@@ -9,6 +9,7 @@ import HelpBlock from 'react-bootstrap/lib/HelpBlock';
 import ControlLabel from 'react-bootstrap/lib/ControlLabel';
 import PropTypes from 'prop-types';
 import Checkbox from 'react-bootstrap/lib/Checkbox';
+import FBLoginButton from 'react-facebook-login';
 import * as userApi from '../api/user';
 import Center from '../components/Centralizer';
 
@@ -20,14 +21,59 @@ class SignIn extends Component {
       passWrong: false,
       passInputError: null,
       email: '',
-      password:'',
+      password: '',
     };
   }
-  
+
+  componentDidMount() {
+
+  }
+
+  responseFacebook = (response) => {
+    console.log(response);
+
+    const guest = {};
+    if (response.birthday){
+    let birthDate = response.birthday.split('/');
+      guest.age = this.ageCalculator(birthDate);
+    }
+
+    guest.email = response.email;
+    guest.password = 'Logged via Facebook';
+    guest.firstName = response.name;
+
+
+    userApi.signIn(guest)
+      .then((data) => {
+        this.props.setUser(data);
+        localStorage.setItem('user', JSON.stringify(data));
+        this.props.history.push('/');
+      });
+  };
+
+  ageCalculator = (birthday) => {
+    const today = new Date();
+    const todayObj = {
+      day: today.getDate(),
+      month: today.getMonth(),
+      year: today.getFullYear(),
+    };
+    let age;
+    if ((todayObj.month + 1) > Number(birthday[0])) {
+      return age = todayObj.year - birthday[2];
+    }
+    if ((todayObj.month + 1) < Number(birthday[0])) {
+      return age = todayObj.year - birthday[2] - 1;
+    }
+    if ( todayObj.day >= Number(birthday[1]) ) {
+      return age = todayObj.year - birthday[2];
+    }
+    return age = todayObj.year - birthday[2] - 1;
+  }
 
   onInputChange = (e) => {
-    e.preventDefault();    
-    const { id } = e.target;    
+    e.preventDefault();
+    const { id } = e.target;
     this.setState({
       [id]: e.target.value,
     });
@@ -42,21 +88,21 @@ class SignIn extends Component {
       password: this.state.password,
     };
     userApi.signIn(guest)
-    .then((data) => {
-      if (data.emailWrong) {
-        return this.setState({
-          emailWrong: true,
-        });
-      }
-      if (data.passWrong) {
-        return this.setState({
-          passWrong: true,
-        });
-      }
-      this.props.setUser(data);
-      localStorage.setItem('user',JSON.stringify(data));
-      this.props.history.push('/');
-    });
+      .then((data) => {
+        if (data.emailWrong) {
+          return this.setState({
+            emailWrong: true,
+          });
+        }
+        if (data.passWrong) {
+          return this.setState({
+            passWrong: true,
+          });
+        }
+        this.props.setUser(data);
+        localStorage.setItem('user', JSON.stringify(data));
+        this.props.history.push('/');
+      });
   }
 
   validateForm = () => {
@@ -67,7 +113,7 @@ class SignIn extends Component {
     }
 
     this.setState(err);
-    if (Object.keys(err).length) return false;  
+    if (Object.keys(err).length) return false;
     return true;
   }
 
@@ -76,16 +122,16 @@ class SignIn extends Component {
   renderEmailErr = () => {
     if (this.state.emailWrong) {
       return (
-        <p style={{color:'red'}}>That email is not registered!</p>
+        <p style={{ color: 'red' }}>That email is not registered!</p>
       );
     }
   }
 
   renderPassErr = () => {
     if (this.state.passWrong) {
-    return (
-      <p style={{color:'red'}}>That password is incorrect!</p>
-    );
+      return (
+        <p style={{ color: 'red' }}>That password is incorrect!</p>
+      );
     }
   }
 
@@ -95,13 +141,14 @@ class SignIn extends Component {
       return <Redirect to="/" />;
     }
 
-    
+
     return (
-      <Center> 
-        <div 
+      <Center>
+        <div
           style={
-            { width: '500px',
-          }
+            {
+              width: '500px',
+            }
           }
         >
           <h1>Please Sign in</h1>
@@ -111,10 +158,10 @@ class SignIn extends Component {
                 Email
               </Col>
               <Col sm={10}>
-                <FormControl 
-                  type="email" 
-                  placeholder="Email" 
-                  onChange={this.onInputChange} 
+                <FormControl
+                  type="email"
+                  placeholder="Email"
+                  onChange={this.onInputChange}
                   value={this.state.email}
                 />
               </Col>
@@ -125,15 +172,15 @@ class SignIn extends Component {
                 Password
               </Col>
               <Col sm={10}>
-                <FormControl 
-                  type="password" 
+                <FormControl
+                  type="password"
                   placeholder="Password"
                   onChange={this.onInputChange}
                   value={this.state.password}
                 />
-                {this.state.passInputError && 
+                {this.state.passInputError &&
                   <HelpBlock>Password is too short!</HelpBlock>
-                  }
+                }
               </Col>
             </FormGroup>
 
@@ -156,6 +203,14 @@ class SignIn extends Component {
               </Col>
             </FormGroup>
           </Form>
+          <Col mdOffset={2} md={10}>
+            <FBLoginButton
+              appId="2166905770249416"
+              fields="name,email,picture,birthday"
+              scope="public_profile, email, user_birthday"
+              callback={this.responseFacebook}
+            />
+          </Col>
         </div>
       </Center>
     );
