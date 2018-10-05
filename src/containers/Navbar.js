@@ -82,7 +82,7 @@ Navbar.propTypes = {
     fullname: PropTypes.string,
     role: PropTypes.string,
     token: PropTypes.string,
-    id: PropTypes.string,
+    id: PropTypes.number,
   }),
   logout: PropTypes.func.isRequired,
   history: PropTypes.shape({

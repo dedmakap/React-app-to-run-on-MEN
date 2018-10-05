@@ -19,13 +19,13 @@ class UsersTable extends Component {
     const { users } = this.props;
     if (!users) return null;
     return users.map((user) => (
-      <tr key={user._id}>
-        <td><Link to={`users/userpage/${user._id}`}>{user._id}</Link></td>
-        <td>{user.firstName}</td>
+      <tr key={user.id}>
+        <td><Link to={`users/userpage/${user.id}`}>{user.id}</Link></td>
+        <td>{user.fullname}</td>
         <td>{user.email}</td>
         <td>{user.age}</td>
-        <td>{user.userName}</td>
-        <td>{user.role.name}</td>
+        <td>{user.username}</td>
+        <td>{user.Role.title}</td>
       </tr>
     )
     );
@@ -231,13 +231,13 @@ class UsersTable extends Component {
                 <StyledTableHead>
                   id
                   <Button
-                    id="_id"
-                    data-dir={sortBy === '_id' && sortDir === 'asc' ? 
+                    id="id"
+                    data-dir={sortBy === 'id' && sortDir === 'asc' ? 
                     'desc' : 'asc'
                     }
                     onClick={this.onSorterClick}
                   >
-                    {sortBy === '_id' && sortDir === 'asc' ? 
+                    {sortBy === 'id' && sortDir === 'asc' ? 
                       upArrow : downArrow  
                     }
                   </Button>
@@ -247,13 +247,13 @@ class UsersTable extends Component {
                 <StyledTableHead>
                   Full name
                   <Button
-                    id="firstName"
-                    data-dir={sortBy === 'firstName' && sortDir === 'asc' ? 
+                    id="fullname"
+                    data-dir={sortBy === 'fullname' && sortDir === 'asc' ? 
                     'desc' : 'asc'
                     }
                     onClick={this.onSorterClick}
                   >
-                    {sortBy === 'firstName' && sortDir === 'asc' ? 
+                    {sortBy === 'fullname' && sortDir === 'asc' ? 
                       upArrow : downArrow  
                     }
                   </Button>
@@ -295,13 +295,13 @@ class UsersTable extends Component {
                 <StyledTableHead>
                   Username
                   <Button
-                    id="userName"
-                    data-dir={sortBy === 'userName' && sortDir === 'asc' ? 
+                    id="username"
+                    data-dir={sortBy === 'username' && sortDir === 'asc' ? 
                     'desc' : 'asc'
                     }
                     onClick={this.onSorterClick}
                   >
-                    {sortBy === 'userName' && sortDir === 'asc' ? 
+                    {sortBy === 'username' && sortDir === 'asc' ? 
                       upArrow : downArrow  
                     }
                   </Button>
@@ -311,13 +311,13 @@ class UsersTable extends Component {
                 <StyledTableHead>
                   Role
                   <Button
-                    id="role"
-                    data-dir={sortBy === 'role' && sortDir === 'asc' ? 
+                    id="roleID"
+                    data-dir={sortBy === 'roleID' && sortDir === 'asc' ? 
                     'desc' : 'asc'
                     }
                     onClick={this.onSorterClick}
                   >
-                    {sortBy === 'role' && sortDir === 'asc' ? 
+                    {sortBy === 'roleID' && sortDir === 'asc' ? 
                       upArrow : downArrow  
                     }
                   </Button>
@@ -350,8 +350,8 @@ UsersTable.propTypes = {
 
 UsersTable.defaultProps = {
   loading: true,
-  sortBy: 'role',
-  sortDir: 'desc',
+  sortBy: 'id',
+  sortDir: 'asc',
 
 };
 

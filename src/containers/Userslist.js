@@ -32,8 +32,8 @@ class Userslist extends Component {
       current: 1,
       pages: 10,
       users: [],
-      sortDirection: 'desc',
-      sortTarget: 'role',
+      sortDirection: 'asc',
+      sortTarget: 'id',
       perPage: 9,
     };
 

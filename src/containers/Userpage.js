@@ -24,12 +24,12 @@ class Userpage extends Component {
     this.state = {
       loading: true,
       user: {
-        firstName: '',
+        fullname: '',
         email: '',
         age: '',
-        userName: '',
-        role: {
-          name: '',
+        username: '',
+        Role: {
+          title: '',
         },
         avatar: '',
       },
@@ -119,7 +119,7 @@ class Userpage extends Component {
             <h2>
               Hello, 
               {' '}
-              {this.state.user.firstName}
+              {this.state.user.fullname}
               {'!'}
             </h2>
           </Row>
@@ -157,7 +157,7 @@ class Userpage extends Component {
                   <tr>
                     <td>
                       <EditableCell
-                        divValue={this.state.user.firstName}
+                        divValue={this.state.user.fullname}
                         colId="firstName"
                         onInputClick={this.onInputClick}
                         onInputChange={this.onInputChange}
@@ -187,7 +187,7 @@ class Userpage extends Component {
                     </td>
                     <td>
                       <EditableCell
-                        divValue={this.state.user.userName}
+                        divValue={this.state.user.username}
                         colId="userName"
                         onInputClick={this.onInputClick}
                         onInputChange={this.onInputChange}
@@ -195,7 +195,7 @@ class Userpage extends Component {
                         inputValue={this.state.updatedField}
                       />
                     </td>
-                    <td>{this.state.user.role.name}</td>
+                    <td>{this.state.user.Role.title}</td>
                   </tr>
                 </tbody>
               </Table>
@@ -209,13 +209,13 @@ class Userpage extends Component {
                     id='change-role-dropdown'
                   >
                     <MenuItem
-                      id="5b8cec15dbf500a68decf847"
+                      id="1"
                       onSelect={this.onMenuItemSelect}
                     >
                       Admin
                     </MenuItem>
                     <MenuItem 
-                      id="5b8ce284945dc819893a55d1"
+                      id="2"
                       onSelect={this.onMenuItemSelect}
                     >
                       User
@@ -236,7 +236,7 @@ Userpage.propTypes = {
     fullname: PropTypes.string,
     role: PropTypes.string,
     token: PropTypes.string,
-    id: PropTypes.string,
+    id: PropTypes.number,
   }).isRequired,
   match: PropTypes.shape().isRequired,
   history: PropTypes.shape({
