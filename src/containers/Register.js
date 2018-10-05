@@ -23,7 +23,8 @@ class Register extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      emailError: false,
+      emailExists: false,
+      emailError:false,
       ageError: null,
       fullnameError: null,
       usernameError: null,
@@ -49,8 +50,14 @@ class Register extends Component {
     };
     userApi.register(user)
       .then(data => {
-        if (data.emailWrong) {
+        if (data.emailExists) {
           return this.setState({
+            emailExists: true,
+          });
+        }
+        if (data.emailError) {
+          return this.setState({
+            emailExists: false,
             emailError: true,
           });
         }
@@ -73,9 +80,14 @@ class Register extends Component {
   }
 
   renderEmailErr = () => {
-    if (this.state.emailError) {
+    if (this.state.emailExists) {
       return (
         <p style={{ color: 'red' }}>That email is already registered!</p>
+      );
+    }
+    if (this.state.emailError) {
+      return (
+        <p style={{ color: 'red' }}>Email is incorrect!</p>
       );
     }
   }

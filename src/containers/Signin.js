@@ -99,6 +99,7 @@ class SignIn extends Component {
             passWrong: true,
           });
         }
+        console.log(data);
         this.props.setUser(data);
         localStorage.setItem('user', JSON.stringify(data));
         this.props.history.push('/');
