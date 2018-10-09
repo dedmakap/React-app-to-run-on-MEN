@@ -51,6 +51,22 @@ class Userpage extends Component {
       });
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.match.params.id !== prevProps.match.params.id) {
+      const id = this.props.match.params.id;
+      if (!this.props.guest || this.props.guest === undefined) {
+        return this.props.history.push('/');
+      }
+    if (this.props.guest.id !== id && this.props.guest.role !== 'admin') {
+      return this.props.history.push('/');
+    }
+    return getUserById(id)
+      .then((data) => {
+        this.setState({ loading: false, user: data });
+      });
+    }
+  }
+
   onFileSelect = (e) => {
     e.preventDefault();
     const file = e.target.files[0];
@@ -67,10 +83,11 @@ class Userpage extends Component {
   onMenuItemSelect = (key, e) => {
     const roleId = e.target.id;
     const id = this.props.match.params.id;
-    let colId = 'role';
-    if (e.target.text.toLowerCase() !== this.state.user.role.name) {
+    let colId = 'roleID';
+    if (e.target.text.toLowerCase() !== this.state.user.Role.title) {
       return putUserField(id, colId, roleId)
         .then((data) => {
+          console.log(data);
           this.setState({ user: data });
         });
     }
@@ -158,7 +175,7 @@ class Userpage extends Component {
                     <td>
                       <EditableCell
                         divValue={this.state.user.fullname}
-                        colId="firstName"
+                        colId="fullname"
                         onInputClick={this.onInputClick}
                         onInputChange={this.onInputChange}
                         onInputBlur={this.onInputBlur}
@@ -188,7 +205,7 @@ class Userpage extends Component {
                     <td>
                       <EditableCell
                         divValue={this.state.user.username}
-                        colId="userName"
+                        colId="username"
                         onInputClick={this.onInputClick}
                         onInputChange={this.onInputChange}
                         onInputBlur={this.onInputBlur}

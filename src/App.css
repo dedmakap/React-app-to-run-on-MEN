@@ -43,4 +43,5 @@ body,
 .login-block {
   float: right;
   margin: 20px;
+  margin-top: 10px;
 }

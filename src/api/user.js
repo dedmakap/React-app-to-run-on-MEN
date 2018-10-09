@@ -59,3 +59,9 @@ export const signInFB = (token) => {
     )
     .then((response) => response.data);
 };
+
+export const getHomePage = () => {
+  return axios.get('/jumbo/api')
+  .then(response => response.data);
+};
+
