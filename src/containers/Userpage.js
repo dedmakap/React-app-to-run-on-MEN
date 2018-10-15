@@ -13,6 +13,7 @@ import Table from 'react-bootstrap/lib/Table';
 import PropTypes from 'prop-types';
 import { getUserById, putUserField, postUserAvatar } from '../api/user';
 import EditableCell from '../components/ProfileEditableCell';
+import PostsFeed from './PostsFeed';
 
 
 // import Center from '../components/Centralizer';
@@ -38,7 +39,7 @@ class Userpage extends Component {
   }
 
   componentDidMount() {
-    const id = this.props.match.params.id;
+    const id = Number(this.props.match.params.id);
     if (!this.props.guest || this.props.guest === undefined) {
         return this.props.history.push('/');
       }
@@ -240,7 +241,14 @@ class Userpage extends Component {
                   </DropdownButton>
                 )
               }
+              
             </Col>
+            <h2>Your posts</h2>
+            <PostsFeed 
+              user={this.props.guest} 
+              oneAuthor 
+              authorID={this.state.user.id} 
+            />
           </Row>
         </Grid>
       </React.Fragment>

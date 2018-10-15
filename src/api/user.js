@@ -65,3 +65,23 @@ export const getHomePage = () => {
   .then(response => response.data);
 };
 
+export const getFeed = (id) => {
+  const headers = getHeaders();
+  return axios.get(`/users/api/posts/${id}`, {headers})
+    .then(response => response.data);
+};
+
+export const postNewPost = (newPost) => {
+  const headers = getHeaders();
+  return axios.post('/jumbo/api/newpost', {newPost}, {headers})
+    .then(response => response.data);
+};
+
+export const putLike = (postID, userID) => {
+  const headers = getHeaders();
+  return axios.post('/jumbo/api/newlike', {postID, userID}, {headers})
+    .then(response => response.data);
+};
+
+
+

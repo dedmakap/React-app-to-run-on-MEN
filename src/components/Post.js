@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import socketIOClient from 'socket.io-client';
 import styled from 'styled-components';
 import { Button, Glyphicon, Panel } from 'react-bootstrap/lib/';
 import PropTypes from 'prop-types';
@@ -32,15 +31,21 @@ class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      endpoint: "http://localhost:3500",
-      counter: 1,
+      likesCount: this.props.likes.length,
     };
   }
 
 
   componentDidMount() {
-    const socket = socketIOClient(this.state.endpoint);
-    socket.on('addlike', likes => this.setState({ counter: likes }));
+    this.props.socket.on('addlike', (likes, postID) => {
+      if (postID === this.props.postID) {
+      this.setState({ likesCount: likes });
+    }
+    });
+    
+  }
+
+  componentDidUpdate() {
   }
 
   getPostingTime = () => {
@@ -48,10 +53,15 @@ class Post extends Component {
     return postingTime;
   }
 
-  send = () => {
-    const socket = socketIOClient(this.state.endpoint);
-    socket.emit('addlike', this.state.counter);
-
+  likeClick = () => {
+   console.log(this.props);
+   const { postID } = this.props;
+   const userID = this.props.user.id;
+   this.props.postPutLike(postID, userID)
+    .then(newLikesCount => {
+      console.log(newLikesCount);
+      return this.setState({likesCount: newLikesCount});
+    });
   };
 
   render() {
@@ -69,9 +79,9 @@ class Post extends Component {
           </ContentBlock>
           {this.props.user.id && (
             <LikeBlock>
-              <Button onClick={this.send}>
+              <Button onClick={this.likeClick}>
                 <Glyphicon glyph="heart" />
-                {` ${this.props.likes.length}`}
+                {` ${this.state.likesCount}`}
               </Button>
             </LikeBlock>
           )}
@@ -89,7 +99,11 @@ Post.propTypes = {
   }).isRequired,
   likes: PropTypes.arrayOf(PropTypes.shape).isRequired,
   postingTime: PropTypes.string.isRequired,
-
+  postID: PropTypes.number.isRequired,
+  postPutLike: PropTypes.func.isRequired,
+  socket: PropTypes.shape({
+    on: PropTypes.func,
+  }).isRequired,
 };
 
 Post.defaultProps = {
